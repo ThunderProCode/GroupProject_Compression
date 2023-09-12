@@ -8,14 +8,14 @@ public class CompressionTests
         Assert.AreEqual("abcdefg", Compression.Decompress("abcdefg", new int[]{7}, new int[]{}, new int []{}));
     }
 
-    // [Test]
-    // public void CanBackTrackBy1()
-    // {
-    //     Assert.AreEqual("abcdefggggg", Compression.Decompress("abcdefg", new int[]{7}, new int[]{1}, new int []{4}));
-    // }
+    [Test]
+    public void CanBackTrackBy1()
+    {
+        Assert.AreEqual("abcdefggggg", Compression.Decompress("abcdefg", new int[]{7}, new int[]{1}, new int []{4}));
+    }
 }
 
-public class DequeueTests
+public class DequeTests
 {
     [Test]
     public void InitialSizeWorks()
@@ -33,7 +33,7 @@ public class DequeueTests
 
 }
 
-public class DequeueFirstAddWorks
+public class DequeFirstAddWorks
 {
     DoubleEndedArrayQueue<int> q = new DoubleEndedArrayQueue<int>();
 
@@ -70,7 +70,7 @@ public class DequeueFirstAddWorks
 
 }
 
-public class DequeueTwoAddsWork
+public class DequeTwoAddsWork
 {
     DoubleEndedArrayQueue<int> q = new DoubleEndedArrayQueue<int>();
 
@@ -108,7 +108,7 @@ public class DequeueTwoAddsWork
 }
 
 
-public class DequeueThreeAddsWork
+public class DequeThreeAddsWork
 {
     DoubleEndedArrayQueue<int> q = new DoubleEndedArrayQueue<int>();
 
@@ -152,7 +152,117 @@ public class DequeueThreeAddsWork
 
 }
 
-public class DequeueFourAddsWork
+
+public class DequeUsesCorrectSpace
+{
+
+    DoubleEndedArrayQueue<int> q = new DoubleEndedArrayQueue<int>();
+
+    [SetUp]
+    public void Setup() {
+        q = new DoubleEndedArrayQueue<int>();
+        q.Add(0, 9);
+        q.Add(1, 7);
+        q.Add(2, 6);
+        q.Add(3, 10);
+    }
+
+    [Test]
+    public void RemoveLast()
+    {
+        q.Remove(3);
+        Assert.AreEqual(new int[] {9, 7, 6}, new int[] {q.GetContents(0), q.GetContents(1), q.GetContents(2)});
+    }
+
+    [Test]
+    public void RemoveFirst()
+    {
+        q.Remove(0);
+        Assert.AreEqual(new int[] {7, 6, 10}, new int[] {q.GetContents(1), q.GetContents(2), q.GetContents(3)});
+    }
+
+    [Test]
+    public void RemoveSecondToLast()
+    {
+        q.Remove(2);
+        Assert.AreEqual(new int[] {9, 7, 10}, new int[] {q.GetContents(0), q.GetContents(1), q.GetContents(2)});
+    }
+
+    [Test]
+    public void RemoveSecond()
+    {
+        q.Remove(1);
+        Assert.AreEqual(new int[] {9, 6, 10}, new int[] {q.GetContents(1), q.GetContents(2), q.GetContents(3)});
+    }
+
+    [Test]
+    public void RemoveSecondAndThenFirstShouldBothShiftRight()
+    {
+        q.Remove(1);
+        q.Remove(0);
+        Assert.AreEqual(new int[] {9, 9}, new int[] {q.GetContents(0), q.GetContents(1)});
+        Assert.AreEqual(new int[] {6, 10}, new int[] {q.GetContents(2), q.GetContents(3)});
+    }
+
+    [Test]
+    public void RemoveSecondAndThenSecondShouldShiftLeft ()
+    {
+        q.Remove(1);
+        q.Remove(1);
+        Assert.AreEqual(new int[] {9, 10}, new int[] {q.GetContents(0), q.GetContents(3)});
+        Assert.AreEqual(new int[] {9, 10}, new int[] {q.GetContents(1), q.GetContents(2)});
+    }
+
+
+    [Test]
+    public void RemoveTwoFromFrontAndThenAddBack()
+    {
+        q.Remove(0);
+        q.Remove(0);
+        q.Add(2, 15);
+        Assert.AreEqual(new int[] {15, 6, 10}, new int[] {q.GetContents(0), q.GetContents(2), q.GetContents(3)});
+        Assert.AreEqual(new int[] {6, 10, 15}, new int[] {q.Get(0), q.Get(1), q.Get(2)});
+    }
+
+    [Test]
+    public void RemoveTwoFromFrontAndThenAddFront()
+    {
+        q.Remove(0);
+        q.Remove(0);
+        q.Add(0, 15);
+        Assert.AreEqual(new int[] {15, 6, 10}, new int[] {q.GetContents(1), q.GetContents(2), q.GetContents(3)});
+        Assert.AreEqual(new int[] {15, 6, 10}, new int[] {q.Get(0), q.Get(1), q.Get(2)});
+    }
+
+    [Test]
+    public void RemoveTwoFromFrontAndThenAddThreeBackSoThatItGrows()
+    {
+        q.Remove(0);
+        q.Remove(0);
+        q.Add(2, 15);
+        q.Add(3, 5);
+        q.Add(4, 25);
+        Assert.AreEqual(new int[] {6, 10, 15, 5, 25}, new int[] {q.GetContents(0), q.GetContents(1), q.GetContents(2), q.GetContents(3), q.GetContents(4)});
+        Assert.AreEqual(5, q.Size());
+        Assert.AreEqual(new int[] {6, 10, 15, 5, 25}, new int[] {q.Get(0), q.Get(1), q.Get(2), q.Get(3), q.Get(4)});
+    }
+
+    [Test]
+    public void AddNearFront()
+    {
+        Assert.AreEqual(4, q.Size());
+        Assert.AreEqual(4, q.Capacity());
+        q.Add(1, 15);
+        Assert.AreEqual(5, q.Size());
+        Assert.AreEqual(8, q.Capacity());
+        Assert.AreEqual(new int[] {9, 15, 7, 6, 10}, new int[] {q.Get(0), q.Get(1), q.Get(2), q.Get(3), q.Get(4)});
+        Assert.AreEqual(new int[] {15, 7, 6, 10, 9}, new int[] {q.GetContents(0), q.GetContents(1), q.GetContents(2), q.GetContents(3), q.GetContents(7)});
+    }
+
+}
+
+
+public class DequeFourAddsWork
 {
     DoubleEndedArrayQueue<int> q = new DoubleEndedArrayQueue<int>();
 
@@ -245,103 +355,3 @@ public class DoubleEndedArrayQueueRemoval
     }
 
 }
-
-
-public interface IList<T> {
-    int Size();
-    T Get(int index);
-    T Set(int index, T value);
-    void Add(int index, T value);
-    T Remove(int index);
-}
-
-public class DoubleEndedArrayQueue<T> : IList<T>
-{
-    T[] values = new T[]{};
-    int front = 0;
-    int count = 0;
-
-    public int Capacity() {
-        return values.Length;
-    }
-
-    public DoubleEndedArrayQueue() {
-
-    }
-
-    private void Resize() {
-        T[] newValues = new T[Math.Max(1, count * 2)];
-        Array.Copy(values, newValues, count);
-        values = newValues;
-    }
-
-    public void ShiftRight(int start, int end)
-    {
-        for (int dest = end; start < dest; dest--) {
-            values[dest] = values[dest - 1];
-        }
-    }
-
-    public void ShiftLeft(int start, int end)
-    {
-        for (int dest = start - 1; dest < end - 1; dest++) {
-            values[dest] = values[dest + 1];
-        }
-    }
-
-    // public void ShiftLeft(int index)
-    // {
-    //     for (int source = count - 1; index < source; dest--) {
-    //         values[dest] = values[dest - 1];
-    //     }
-    // }
-
-
-    public void Add(int index, T value)
-    {
-        if (count >= values.Length) Resize();
-        ShiftRight(index, count);
-        values[index] = value;
-        count++;
-    }
-
-    public T Get(int index)
-    {
-        return values[index];
-    }
-
-    public T Remove(int index)
-    {
-        T removed = values[index];
-        ShiftLeft(index + 1, count);
-        count--;
-        if (count * 3 < values.Length) Resize();
-        return removed;
-    }
-
-    public T Set(int index, T value)
-    {
-        T replaced = values[index];
-        values[index] = value;
-        return replaced;
-    }
-
-    public int Size()
-    {
-        return count;
-    }
-}
-
-public class Compression {
-
-    public static IEnumerable<char> Decompress(IEnumerable<char> encoded, IEnumerable<int> take, IEnumerable<int> backtrack, IEnumerable<int> copy) {
-
-        foreach (int numberToTake in take) {
-        
-        }
-        return encoded;
-        // if (false) {
-        //     yield return 'a';
-        // }
-    }   
-}   
