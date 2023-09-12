@@ -133,4 +133,9 @@ public class DoubleEndedArrayQueue<T> : IList<T>, IEnumerable<T>
     {
         return GetEnumerator();
     }
+
+    public void Add(T value)
+    {
+        Add(Size(), value);
+    }
 }
