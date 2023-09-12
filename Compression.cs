@@ -1,6 +1,22 @@
+using System.Collections;
+
 namespace compression;
 
-public class Compression {
+public class CompressedString : IEnumerable<char> {
+    private DoubleEndedArrayQueue<char> encoded = new DoubleEndedArrayQueue<char>();
+    private DoubleEndedArrayQueue<int> countsToTakeFromOriginal = new DoubleEndedArrayQueue<int>();
+    private DoubleEndedArrayQueue<int> amountsToBacktrackInEncoded = new DoubleEndedArrayQueue<int>();
+    private DoubleEndedArrayQueue<int> countsToCopyFromEncoded = new DoubleEndedArrayQueue<int>();
+
+    public CompressedString(IEnumerable<char> original) {
+        foreach (char c in original) {
+            encoded.Add(c);
+        }
+        countsToTakeFromOriginal.Add(encoded.Size());
+        amountsToBacktrackInEncoded.Add(0);
+        countsToCopyFromEncoded.Add(0);
+    }
+
 
     public static IEnumerable<char> Decompress(IEnumerable<char> encoded, IEnumerable<int> take, IEnumerable<int> backtrack, IEnumerable<int> copy) {
         DoubleEndedArrayQueue<char> result = new DoubleEndedArrayQueue<char>();
@@ -16,5 +32,19 @@ public class Compression {
             }
         }
         return result;
-    }   
+    }
+
+    public IEnumerator<char> GetEnumerator()
+    {
+        return Decompress(encoded, countsToTakeFromOriginal, amountsToBacktrackInEncoded, countsToCopyFromEncoded).GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
+
+    public int EncodedLength() {
+        return encoded.Size() + countsToCopyFromEncoded.Size();
+    }
 }   

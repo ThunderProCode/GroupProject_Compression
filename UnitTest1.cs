@@ -5,20 +5,30 @@ public class CompressionTests
     [Test]
     public void CanTakeAll()
     {
-        Assert.AreEqual("abcdefg", Compression.Decompress("abcdefg", new int[]{7}, new int[]{0}, new int []{0}));
+        Assert.AreEqual("abcdefg", CompressedString.Decompress("abcdefg", new int[]{7}, new int[]{0}, new int []{0}));
     }
 
     [Test]
     public void CanBackTrackBy1()
     {
-        Assert.AreEqual("abcdefggggg", Compression.Decompress("abcdefg", new int[]{7}, new int[]{1}, new int []{4}));
+        Assert.AreEqual("abcdefggggg", CompressedString.Decompress("abcdefg", new int[]{7}, new int[]{1}, new int []{4}));
     }
 
     [Test]
     public void CanBackTrackBy5()
     {
-        Assert.AreEqual("abcdefgcdefgcdefgcde", Compression.Decompress("abcdefg", new int[]{7}, new int[]{5}, new int []{13}));
+        Assert.AreEqual("abcdefgcdefgcdefgcde", CompressedString.Decompress("abcdefg", new int[]{7}, new int[]{5}, new int []{13}));
     }
+
+    [Test]
+    public void Constructor()
+    {
+        var message = "abcdefgcdefgcdefgcde";
+        var compressed = new CompressedString(message);
+        Assert.AreEqual(message, compressed);
+        Console.WriteLine($"Original Length: {message.Length} Encoded length: {compressed.EncodedLength()}");
+    }
+
 }
 
 public class DequeTests
