@@ -29,6 +29,11 @@ public class CompressionTests
         Console.WriteLine($"Original Length: {message.Length} Encoded length: {compressed.EncodedLength()}");
     }
 
+    [Test]
+    public void CanUseStreamsLongerThan1Bigger() {
+        Assert.AreEqual("abcbcbcbcbcbcbdaaaaaaeaaaeaaaeaa",CompressedString.Decompress("abcdae",new int[]{3,2,1}, new int[]{2,1,4},new int[]{11,5,10}));
+    }
+
 }
 
 public class DequeTests

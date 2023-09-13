@@ -17,16 +17,27 @@ public class CompressedString : IEnumerable<char> {
         countsToCopyFromEncoded.Add(0);
     }
 
+    public static IEnumerable<T> Take<T>(IEnumerator<T> enumerator, int count) {
+        for (int i = 0; i < count; i++) {
+            enumerator.MoveNext();
+            yield return enumerator.Current;
+        }
+    }
 
     public static IEnumerable<char> Decompress(IEnumerable<char> encoded, IEnumerable<int> take, IEnumerable<int> backtrack, IEnumerable<int> copy) {
         DoubleEndedArrayQueue<char> result = new DoubleEndedArrayQueue<char>();
 
+        var orig = encoded.GetEnumerator();
+        var backs = backtrack.GetEnumerator();
+        var copies = copy.GetEnumerator();
         foreach (int numberToTake in take) {
-            foreach (char c in encoded.Take(numberToTake)) {
+            backs.MoveNext();
+            copies.MoveNext();
+            foreach (char c in Take(orig,numberToTake)) {
                 result.Add(c);
             }
-            int startIndex = result.Size() - backtrack.Take(1).First();
-            int copyCount = copy.Take(1).First();
+            int startIndex = result.Size() - backs.Current;
+            int copyCount = copies.Current;
             for (int i = 0; i < copyCount; i++) {
                 result.Add(result.Get(startIndex + i));
             }
