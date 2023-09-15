@@ -67,11 +67,37 @@ public class DecompressedString {
 
     public static IEnumerable<char> Compress(IEnumerable<char> decoded) {
        List<char> compressedString = new List<char>();
+
        foreach(char character in decoded){
         if(!compressedString.Contains(character)){
             compressedString.Add(character);
+        } else if(compressedString.Contains(character)){
+            // if(DetermineCharactersCount(decoded,character) >= 5){
+            //     compressedString.Add(character);
+            // }
         }
+       }
+
+       foreach (char letter in compressedString) {
+        Console.WriteLine("This is the string:");
+        Console.WriteLine(letter);
        }
        return compressedString;
     }
+    public static int DetermineCharactersCount(IEnumerable text, char character) {
+        int count = 0;
+        foreach (char item in text ) {
+            if(item == character)
+            {
+                count++;
+            }
+        }
+        return count;
+    }
 }
+
+
+
+// abcbcbcbcbcbcbdaaaaaaeaaaeaaaeaa
+
+// abcde

@@ -3,7 +3,13 @@ namespace compression;
 public class CompressedStringTest {
     [Test]
     public void CompressWorks() {
-        Assert.AreEqual("abcdae", DecompressedString.Compress("abcbcbcbcbcbcbdaaaaaaeaaaeaaaeaa"));
+        
+        Assert.AreEqual("abcde", DecompressedString.Compress("abcbcbcbcbcbcbdaaaaaaeaaaeaaaeaa"));
+    }
+
+    [Test]
+    public void TestCharacterCount() {
+        Assert.AreEqual(4,DecompressedString.DetermineCharactersCount("abbbccccb",'c'));
     }
 }
 
