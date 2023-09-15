@@ -1,5 +1,12 @@
 namespace compression;
 
+public class CompressedStringTest {
+    [Test]
+    public void CompressWorks() {
+        Assert.AreEqual("abcdae", DecompressedString.Compress("abcbcbcbcbcbcbdaaaaaaeaaaeaaaeaa"));
+    }
+}
+
 public class CompressionTests
 {
     [Test]

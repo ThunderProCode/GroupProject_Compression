@@ -58,4 +58,20 @@ public class CompressedString : IEnumerable<char> {
     public int EncodedLength() {
         return encoded.Size() + countsToCopyFromEncoded.Size();
     }
-}   
+}
+
+public class DecompressedString {
+    DecompressedString (IEnumerable<char> original) {
+
+    }
+
+    public static IEnumerable<char> Compress(IEnumerable<char> decoded) {
+       List<char> compressedString = new List<char>();
+       foreach(char character in decoded){
+        if(!compressedString.Contains(character)){
+            compressedString.Add(character);
+        }
+       }
+       return compressedString;
+    }
+}
