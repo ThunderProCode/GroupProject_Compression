@@ -4,8 +4,22 @@ public class CompressedStringTest {
     [Test]
     public void CompressWorks() {
         
-        Assert.AreEqual("abcde", DecompressedString.Compress("abcbcbcbcbcbcbdaaaaaaeaaaeaaaeaa"));
+        Assert.AreEqual("abcdae", DecompressedString.Compress("abcbcbcbcbcbcbdaaaaaaeaaaeaaaeaa"));
     }
+
+    [Test]
+    public void CompressWorks2() {
+        
+        Assert.AreEqual("abcdefg", DecompressedString.Compress("abcdefggggg"));
+    }
+
+
+    [Test]
+    public void CompressWorks3() {
+        
+        Assert.AreEqual("qwertte", DecompressedString.Compress("qwerttetetetetetetetetet"));
+    }
+
 
     [Test]
     public void TestCharacterCount() {

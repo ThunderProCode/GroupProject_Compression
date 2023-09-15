@@ -72,9 +72,9 @@ public class DecompressedString {
         if(!compressedString.Contains(character)){
             compressedString.Add(character);
         } else if(compressedString.Contains(character)){
-            // if(DetermineCharactersCount(decoded,character) >= 5){
-            //     compressedString.Add(character);
-            // }
+            if(DetermineCharactersCount(decoded,character) > 7 && !(DetermineCharactersCount(compressedString,character) > 1)){
+                compressedString.Add(character);
+            }
         }
        }
 
