@@ -25,7 +25,14 @@ public class CompressedStringTest {
     public void TestCharacterCount() {
         Assert.AreEqual(4,DecompressedString.DetermineCharactersCount("abbbccccb",'c'));
     }
+
+
+    [Test]
+    public void TestCompressionWithNoPattern(){
+        Assert.AreEqual("abcdefghijk",DecompressedString.Compress("abcdefghijkacbjdegih"));
+    }
 }
+
 
 public class CompressionTests
 {
